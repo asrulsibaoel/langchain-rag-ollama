@@ -1,0 +1,6 @@
+langchain
+langchain-ollama
+chromadb
+tqdm
+qdrant-client
+pymilvus
