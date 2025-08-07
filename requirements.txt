@@ -1,6 +1,28 @@
 langchain
-langchain-ollama
+langchain-community
+langchain-openai
+langchain-deepseek
+langchain-milvus
+langchain-chroma
+langchain-qdrant
+
+# Vector DB support
 chromadb
-tqdm
 qdrant-client
 pymilvus
+
+# Web
+fastapi[standard]
+uvicorn[standard]
+
+# UI
+streamlit
+streamlit-chat
+
+# Document loaders & helpers
+tqdm
+unstructured
+pdfminer.six
+python-dotenv
+python-dotenv
+pydantic

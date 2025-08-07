@@ -1,3 +1,6 @@
 docs/
 __pycache__
 */**/__pycache__
+
+volumes
+.vscode
