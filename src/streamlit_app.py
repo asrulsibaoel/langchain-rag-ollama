@@ -8,9 +8,6 @@ st.title("📚 Retrieval-Augmented Generation (RAG) with Ollama")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- Backend selector ---
-backend = st.selectbox("Select Vector Store", ["chroma", "milvus", "qdrant"])
-
 # --- Chat display ---
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
@@ -23,22 +20,19 @@ if prompt := st.chat_input("Ask something..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     # Prepare payload
-    payload = {
-        "question": prompt,
-        "backend": backend,
-        "history": st.session_state.messages
-    }
+    payload = {"question": prompt}
 
     try:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 res = requests.post(
-                    "http://localhost:5000/ask", json=payload, timeout=30)
+                    "http://localhost:5000/ask", json=payload, timeout=60
+                )
                 res.raise_for_status()
                 result = res.json()
 
-                # --- Extract content ---
-                content = result["answer"]["content"]
+                answer_data = result.get("answer", {})
+                content = answer_data.get("content", "").strip()
 
                 # --- Optional: Split <think> block ---
                 if content.startswith("<think>"):
@@ -51,10 +45,24 @@ if prompt := st.chat_input("Ask something..."):
 
                     st.markdown(final_answer)
                     st.session_state.messages.append(
-                        {"role": "assistant", "content": final_answer})
+                        {"role": "assistant", "content": final_answer}
+                    )
                 else:
                     st.markdown(content)
                     st.session_state.messages.append(
-                        {"role": "assistant", "content": content})
+                        {"role": "assistant", "content": content}
+                    )
+
+                # --- Show source documents if present ---
+                sources = answer_data.get("source_documents", [])
+                if sources:
+                    with st.expander("📄 Sources", expanded=False):
+                        for i, src in enumerate(sources, 1):
+                            st.markdown(f"**Source {i}:**")
+                            st.markdown(src.get("text", ""))
+                            meta = src.get("metadata", {})
+                            if meta:
+                                st.caption(f"Metadata: {meta}")
+
     except Exception as e:
         st.error(f"Error: {e}")

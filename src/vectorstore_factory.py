@@ -1,5 +1,5 @@
 from typing import Literal
-from langchain_community.vectorstores import Chroma, Qdrant, Milvus
+from langchain_community.vectorstores import Chroma, Qdrant, Milvus, VectorStore
 
 # from langchain_ollama import OllamaEmbeddings
 
@@ -8,7 +8,7 @@ from src.llm_factory import get_embeddings
 from src.settings import settings
 
 
-def get_vectorstore(backend: Literal["chroma", "milvus", "qdrant"], persist_directory="db"):
+def get_vectorstore(backend: Literal["chroma", "milvus", "qdrant"], persist_directory="db") -> VectorStore:
     embeddings = get_embeddings()
 
     if backend == "chroma":

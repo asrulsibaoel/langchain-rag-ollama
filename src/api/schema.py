@@ -25,5 +25,7 @@ class ChatTurn(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str
-    backend: str = "milvus"
     history: List[ChatTurn] = []
+
+# class ChatResponse(BaseModel):
+#     answer: BaseMessage
